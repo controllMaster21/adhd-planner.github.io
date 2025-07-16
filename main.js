@@ -58,7 +58,7 @@ function addItem(value, updateStorage = false, state = false) {
 }
 
 function removeItem(btn) {
-    const elem = btn.parentElement;
+    const elem = btn.parentElement.parentElement;
     const item = elem.querySelector("a").innerText;
 
     deleteItem(item);
