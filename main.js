@@ -61,8 +61,8 @@ function removeItem(btn) {
     const elem = btn.parentElement;
     const item = elem.querySelector("a").innerText;
 
-    deleteItem(item)
-    btn.parentElement.parentElement.remove();
+    deleteItem(item);
+    elem.remove();
 }
 
 function saveChange(elem) {
