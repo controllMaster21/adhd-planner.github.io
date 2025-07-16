@@ -1,5 +1,5 @@
-if (window.localStorage.length == 0) {
-    window.localStorage.setItem("items", "{}")
+if (window.localStorage.getItem("items") === null) {
+    window.localStorage.setItem("items", "{}");
 }
 
 const items = window.localStorage.getItem("items");
@@ -58,7 +58,7 @@ function addItem(value, updateStorage = false, state = false) {
 }
 
 function removeItem(btn) {
-    const elem = btn.parentElement.parentElement;
+    const elem = btn.parentElement;
     const item = elem.querySelector("a").innerText;
 
     deleteItem(item)
@@ -72,7 +72,7 @@ function saveChange(elem) {
 
     setState(elem, state);
 
-    const key = elem.parentElement.parentElement.querySelector("a").innerText;
+    const key = elem.parentElement.querySelector("a").innerText;
 
     saveItem(key, data);
 }
@@ -134,7 +134,6 @@ function setState(checkbox, state) {
     checkbox.checked = state === null || state == true;
 
     const list = checkbox.classList;
-    const img = checkbox.firstChild;
 
     switch (state) {
         case false:
