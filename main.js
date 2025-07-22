@@ -2,21 +2,9 @@ if (window.localStorage.getItem("items") === null) {
     window.localStorage.setItem("items", "{}");
 }
 
-const items = window.localStorage.getItem("items");
-const obj = JSON.parse(items);
+refreshList()
 
-for (const item of Object.keys(obj)) {
-    addItem(item, false, obj[item]["state"])
-}
-
-const input = document.getElementById("idk");
-input.addEventListener("keypress", (e) =>
-    {if (e.key == "Enter") {
-        addItem(input.value, true);
-    }}
-)
-
-function addItem(value, updateStorage = false, state = false) {
+function addItem(value, updateStorage = false, {state = false, intensity = "low"}) {
 
     if (value !== "") {
         const container = document.getElementById("list");
@@ -30,7 +18,7 @@ function addItem(value, updateStorage = false, state = false) {
         }
 
         const item = document.createElement("div");
-        item.className = "item";
+        item.className = `item ${intensity}`;
         
         item.innerHTML = 
         `<input class="btn ${state!=false ? (state ? "done" : "prog") : "none"}" type="checkbox" oninput="saveChange(this)">
@@ -39,7 +27,7 @@ function addItem(value, updateStorage = false, state = false) {
         <button class="btn remove" onclick="removeItem(this)">
         <img src="images/trash.png">
         </button>
-        <button class="btn edit" onclick="editItem(this.parentNode.parentNode)">
+        <button class="btn edit" onclick="openInterface(true, this.parentElement.parentElement)">
         <img src="images/pencil.png">
         </button>
         </div>`;
@@ -48,11 +36,8 @@ function addItem(value, updateStorage = false, state = false) {
 
         container.appendChild(item);
 
-        const input = document.getElementById("idk");
-        input.value = "";
-
         if (updateStorage) {
-            saveItem(value, {state:false});
+            saveItem(value, {state:state, intensity:intensity});
         }
     }
 }
@@ -77,33 +62,6 @@ function saveChange(elem) {
     saveItem(key, data);
 }
 
-function editItem(item) {
-    const text = item.getElementsByTagName("a")[0];
-
-    deleteItem(text.innerText);
-
-    const input = document.createElement("input");
-    input.type = "text";
-    input.value = text.innerText;
-
-    item.replaceChild(input, text);
-    input.focus();
-
-    const save = (e) => {
-        try {
-            item.replaceChild(text, input);
-            text.innerText = input.value;
-            saveItem(text.innerText, {"state":getState(item)});
-        } catch {
-            return;
-        }
-    }
-
-    input.addEventListener("keypress", (e) => {if (e.key == "Enter") save(e)})
-    
-    input.addEventListener("focusout", save)
-}
-
 function getItems() {
     return JSON.parse(window.localStorage.getItem("items"));
 }
@@ -111,7 +69,13 @@ function getItems() {
 function saveItem(item, data) {
     var obj = getItems();
 
-    obj[item] = data;
+    if (obj[item]) {
+        for (const key of Object.keys(data)) {
+            obj[item][key] = data[key];
+        }
+    } else {
+        obj[item] = data;
+    }
 
     window.localStorage.setItem("items", JSON.stringify(obj));
 }
@@ -157,4 +121,74 @@ function setState(checkbox, state) {
 function cycleState(state) {
     const states = [false, null, true];
     return states[(states.indexOf(state)+1) % 3]
+}
+
+function makeItem(form) {
+    addItem(form.querySelector("[name=listitem]").value, true, {state:false,intensity:form.querySelector("[name=timeIntensity]").value});
+
+    resetInterface();
+}
+
+function editItem(form, item) {
+    const itemValue = item.querySelector("a").innerText;
+
+    const state = getItems()[itemValue]["state"];
+
+    deleteItem(itemValue);
+    saveItem(form.querySelector("[name=listitem]").value, {state:state,intensity: form.querySelector("[name=timeIntensity]").value});
+    refreshList();
+
+    resetInterface();
+}
+
+function openInterface(edit = false, item = null) {
+    const interface = document.getElementById("itemInterface");
+    const get = interface.querySelector.bind(interface);
+
+    interface.style.display = "block";
+
+    if (edit) {
+        const itemValue = item.querySelector("a").innerText;
+        get("h2").innerText = "Edit item";
+        const button = get("#addItem");
+        button.innerText = "edit";
+        button.onclick = () => editItem(interface, item);
+
+        get("[name=listitem]").value = itemValue;
+        get("[name=timeIntensity]").options.namedItem(getItems()[itemValue].intensity).selected = true;
+
+        interface.addEventListener("keypress", (e) => {if (e.key == "Enter") editItem(interface, item)});
+    } else {
+        get("h2").innerText = "New item";
+        const button = get("#addItem");
+        button.innerText = "create";
+        button.onclick = () => makeItem(interface);
+
+        interface.addEventListener("keypress", (e) => {if (e.key == "Enter") makeItem(interface)});
+    }
+}
+function displayItems(value) {
+    const elems = document.getElementsByClassName("item");
+
+    for (const elem of elems) {
+        elem.style.display = elem.className.includes(value) ? "flex" : "none"
+    }
+}
+
+function refreshList() {
+    const obj = getItems();
+    const list = document.getElementById("list");
+
+    list.innerHTML = "";
+
+    for (const item of Object.keys(obj)) {
+        addItem(item, false, {state: obj[item]["state"], intensity: obj[item]["intensity"] != null ? obj[item]["intensity"] : "low"});
+    }
+}
+
+function resetInterface() {
+    const interface = document.getElementById("itemInterface");
+
+    interface.querySelectorAll("input[type=text]").forEach((item) => item.value = "");
+    interface.style.display = "none";
 }

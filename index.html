@@ -2,19 +2,37 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-height*2, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
     <title>ADHD To Do</title>
 </head>
 <body>
     <h1>My TO DO List</h1>
     <div id="container">
-        <div id="add-cont">
-            <input id="idk" type="text" placeholder="I need to..." maxlength="60">
-            <button id="add" type="button" onclick="addItem()">Submit</button>
+        <div id="tabbar">
+            <button onclick="displayItems('low')" type="button" class="tab">Low time intensity</button>
+            <button onclick="displayItems('middle')" type="button" class="tab">Middle time intensity</button>
+            <button onclick="displayItems('high')" type="button" class="tab">High time intensity</button>
+            <button onclick="displayItems('')" type="button" class="tab">All</button>
         </div>
         <div id="list">
         </div>
+        <button id="add" type="button" onclick="openInterface()">new Item</button>
+    </div>
+    <div id="itemInterface">
+        <h2>New Item</h2>
+        <div>
+            <label for="listitem">Name</label>
+            <input type="text" class="interface" placeholder="I need to..." name="listitem">
+            <label for="timeIntensity">Time intensity</label>
+            <select class="interface" name="timeIntensity">
+                <option value="low">Low (5 minutes)</option>
+                <option value="middle">Middle (15 minutes)</option>
+                <option value="high">High (30 minutes)</option>
+            </select>
+        </div>
+        <button class="formBtn" id="cancel" type="button" onclick="resetInterface()">Cancel</button>
+        <button class="formBtn" id="addItem" type="button" onclick="makeItem(this.parentElement)">Add Item</button>
     </div>
     <script src="main.js"></script>
 </body>

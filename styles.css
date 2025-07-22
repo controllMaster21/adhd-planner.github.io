@@ -1,24 +1,25 @@
 :root {
-    --primary-color: #0d1218;
-    --secondary-color: #34515f;
-    --accentcolor: #135f85;
+    --primary-color: #f4fff7;
+    --secondary-color: #a8dcbe;
+    --accentcolor: #5ab88c;
+    --text-color: #571d1d; /* Added text color */
 }
 
 body {
     background-color: var(--primary-color);
-    color: lightgray;
+    color: var(--text-color); /* Use the text color variable */
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
 h1 {
     text-align: center;
+    color: var(--text-color); /* Use the text color variable */
 }
 
 .item {
     display: flex;
     width: 100%;
     height: 50px;
-    border: 2px solid white;
     text-align: left;
     padding-right: 10px;
     box-sizing: border-box;
@@ -28,17 +29,23 @@ h1 {
 }
 
 .item a {
-    margin: auto 0;
+    margin: auto 20px;
     font-weight: bold;
+    flex-grow: 1;
+    color: rgb(70, 70, 70);
 }
 
-.item input, .item button {
+.item input[type=checkbox], .item button {
     place-content: center;
     display: grid;
 }
 
 .item input[type=checkbox].prog {
-    background-color:rgb(226, 197, 30);
+    background-color:#e2c51e;
+}
+
+.item input[type=checkbox].prog:hover {
+    background-color: #ac9619;
 }
 
 .item input[type=checkbox] {
@@ -49,11 +56,11 @@ h1 {
 }
 
 .item input[type=checkbox].done {
-    background-color: green;
+    background-color: #1ca01c;
 }
 
 .item input[type=checkbox].done:hover {
-    background-color: rgb(1, 92, 1);
+    background-color: #097909;
 }
 
 .item input[type=checkbox].done::before {
@@ -74,34 +81,13 @@ h1 {
     content: ""
 }
 
-.item input[type=checkbox]:hover {
-    background-color: rgb(228, 209, 100);
-}
-
-.item input[type=checkbox].none:hover::before {
-    background-image: url(images/clock.png);
-    background-size: 20px;
-
-    display: block;
-    width: 20px;
-    height: 20px;
-
-    content: ""
-}
-
-.item input[type="text"] {
-    background-color: transparent;
-    border: none;
-    color: white;
-    margin: auto 0;
-    font-size: initial;
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    font-weight: bold;
+.item input[type=checkbox].none:hover {
+    background-color:color-mix(in srgb, var(--primary-color) 100%, black 10%);
 }
 
 .item input[type="text"]:focus {
     outline: none;
-    caret-color: white;
+    caret-color: black;
 }
 
 .remove:hover {
@@ -124,15 +110,13 @@ h1 {
 .btn {
     margin: 0 0 0 5px;
     appearance: none;
-
-    background-color: white;
+    background-color: var(--primary-color); /* Use primary color for button background */
     width: 35px;
     height: 35px;
-
     border: 0.15em solid var(--secondary-color);
     border-radius: 5px;
-    
     transition: 300ms;
+    color: var(--text-color); /* Use the text color variable */
 }
 
 .btns {
@@ -142,66 +126,176 @@ h1 {
 #container {
     width: 800px;
     margin: auto;
+
+    padding: 30px;
+    box-sizing: border-box;
 }
 
 #list {
-    margin: 70px 30px;
-    max-height: 60vh;
+    margin: 10px 30px;
+    height: 60vh;
     overflow-y: scroll;
-}
 
-#list::-webkit-scrollbar-thumb {
-    background-color: var(--secondary-color);
+    scrollbar-width: none;
 }
 
 #list::-webkit-scrollbar {
-    background-color: var(--primary-color);
+    width: none;
 }
 
-#list::-webkit-scrollbar-button {
-    background-color: var(--accentcolor);
-    color: lightgray;
-}
-
-#idk {
-    width: 300px;
-    height: 30px;
-    background-color: var(--secondary-color);
+input[type=text]:focus {
     border: 2px solid black;
+}
+
+input[type=text], select{
+    box-sizing: content-box;
+    height: 30px;
 
     border-radius: 3px;
+
     outline: none;
 
-    color: white;
+    color: black;
     font-size: 19px;
 
     padding: 7px 20px;
+
+    margin: 10px 0;
 }
 
-#idk:focus {
-    border: 2px solid white;
+select {
+    color: black;
+    font-weight: bold;
+    font-size: 17px;
 }
 
-#idk::placeholder {
-    color: lightgray;
+input[type=text]::placeholder{
+    color: black;
     font-size: 15px;
     font-weight: bold;
 }
 
-#add-cont {
-    margin: 0 auto;
+#add {
+    float: right;
+    margin-right: 10px;
+    height: 40px;
+    width: 80px;
+    background-color: var(--secondary-color);
+    color: var(--text-color); /* Use the text color variable */
+    border: 2px solid var(--accentcolor);
+    border-radius: 2px;
+    font-size: 15px;
 
-    width: fit-content;
+    cursor: pointer;
 }
 
-#add {
-    margin-left: 10px;
-    height: 40px;
-    width: 70px;
+#add:hover {
+    background-color: color-mix(in srgb, var(--secondary-color) 100%, white 20%);
+}
 
+#itemInterface {
+    display: none;
+    position: fixed;
+    width: 450px;
+    height: 550px;
+    left: calc(50% - 225px);
+    top: 160px;
     background-color: var(--secondary-color);
-    color: white;
+    padding: 30px;
+    text-align: center;
+    color: var(--text-color); /* Use the text color variable */
+}
+
+#itemInterface div {
+    display: flex;
+    width: 100%;
+
+    flex-direction: column;
+
+    align-items: start;
+}
+
+#itemInterface label {
+    font-weight: bold;
+    color: var(--text-color); /* Use the text color variable */
+}
+
+#itemInterface select {
+    cursor: pointer;
+}
+
+option:hover {
+    background: var(--secondary-color);
+
+    color: black;
+
+    cursor: pointer;
+}
+
+.interface {
+    width: 80%;
+
+    background-color: var(--primary-color);
+    border: 1px solid var(--accentcolor);
+    color: var(--text-color); /* Use the text color variable */
+}
+
+.formBtn {
+    position: absolute;
+    bottom: 20px;
+
+    width: 80px;
+    height: 40px;
+
+    border-radius: 3px;
+    border: 2px solid var(--accentcolor);
+    color: var(--text-color); /* Use the text color variable */
+}
+
+#addItem {
+    right: 30px;
+
+    background-color: var(--primary-color);
+    color: var(--text-color); /* Use the text color variable */
+}
+
+#cancel {
+    left: 30px;
+
+    background-color: lightgray;
+    color: var(--text-color); /* Use the text color variable */
+}
+
+#tabbar {
+    display: flex;
+    width: 100%;
+    height: 40px;
+
+    align-content: stretch;
 
     border: 2px solid black;
-    border-radius: 2px;
+    border-radius: 5px; /* Rounded corners */
+    overflow: hidden; /* Hide any overflow */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+#tabbar button {
+    background-color: var(--secondary-color);
+    color: var(--text-color); /* Use the text color variable */
+    flex: 1; /* Distribute space evenly */
+    border: none;
+
+    border-right: 1px solid var(--accentcolor); /* Consistent border */
+    font-size: 15px;
+
+    transition: background-color 0.2s ease; /* Smooth transition */
+}
+
+#tabbar button:last-child {
+    border-right: none; /* Remove border on the last button */
+}
+
+#tabbar button:hover {
+    background-color: var(--accentcolor); /* Highlight on hover */
+    cursor: pointer; /* Indicate it's clickable */
 }
